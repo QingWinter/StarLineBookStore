@@ -25,6 +25,7 @@ import com.github.winter.library.presenter.BookPresenter;
 import com.github.winter.library.presenter.BookPresenterImp;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -148,6 +149,12 @@ public class MainActivity extends BaseActivity implements MainView, SwipeRefresh
         bookPresenter.getAllBookList();
     }
 
+    @Subscribe
+    public void onEvent(BmobUser user) {
+        this.user = user;
+        showUser(user);
+    }
+
     @Override
     public void showMsg(String msg) {
         binding.refreshLayout.setRefreshing(false);
@@ -181,7 +188,7 @@ public class MainActivity extends BaseActivity implements MainView, SwipeRefresh
 
     @Override
     public void borrowSuccess(Book book) {
-        adapter.updateItem(book);
+        adapter.updateItem(book, listType);
     }
 
     @Override

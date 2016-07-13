@@ -42,7 +42,7 @@ public class UserPresenterImp implements UserPresenter {
             public void done(BmobUser bmobUser, BmobException e) {
                 if (e == null) {
                     //创建成功
-                    view.showMsg(LibApplication.getAppContext().getString(R.string.welcome_back, userName));
+                    signInOrSignUpSuccess(user, userName);
                 } else {
                     //创建失败，已存在用户
                     login(userName, pwd);
@@ -59,15 +59,19 @@ public class UserPresenterImp implements UserPresenter {
             @Override
             public void done(BmobUser bmobUser, BmobException e) {
                 if (e == null) {
-                    EventBus.getDefault().postSticky(user);
-                    SharedPreferences sharedPreferences = LibApplication.getAppContext().getSharedPreferences(LibApplication.getAppContext().getString(R.string.app_name), Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(MainActivity.ID, user.getObjectId()).putString(MainActivity.NAME, user.getUsername()).apply();
-                    view.showMsg(LibApplication.getAppContext().getString(R.string.welcome_back, userName));
+                    signInOrSignUpSuccess(user, userName);
                 } else {
                     view.showError(LibApplication.getAppContext().getString(R.string.errorUser));
                 }
             }
         });
+    }
+
+    private void signInOrSignUpSuccess(BmobUser user, String userName) {
+        EventBus.getDefault().postSticky(user);
+        SharedPreferences sharedPreferences = LibApplication.getAppContext().getSharedPreferences(LibApplication.getAppContext().getString(R.string.app_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(MainActivity.ID, user.getObjectId()).putString(MainActivity.NAME, user.getUsername()).apply();
+        view.showMsg(LibApplication.getAppContext().getString(R.string.welcome_back, userName));
     }
 }

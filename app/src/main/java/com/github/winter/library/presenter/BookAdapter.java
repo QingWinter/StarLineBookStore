@@ -12,12 +12,17 @@ import android.widget.Toast;
 
 import com.github.winter.library.R;
 import com.github.winter.library.data.Book;
+import com.github.winter.library.data.Type;
 import com.github.winter.library.databinding.BookItemBinding;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import cn.bmob.v3.BmobUser;
 
 /**
  * Created by Winter on 2016/7/9.
@@ -78,8 +83,17 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         return data == null ? 0 : data.size();
     }
 
-    public void updateItem(Book book) {
-        data.set(position, book);
+    public void updateItem(Book book, Type listType) {
+        switch (listType) {
+            case ALL:
+                data.set(position, book);
+                break;
+            case MINE:
+            case BORROWABLE:
+            case BORROWED:
+                data.remove(position);
+                break;
+        }
         notifyItemChanged(position);
         position = -1;
     }
